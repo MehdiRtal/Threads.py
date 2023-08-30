@@ -4,7 +4,7 @@ import json
 import re
 from instagrapi import Client
 
-from utils import get_media_id_from_url
+from .utils import get_media_id_from_url
 
 
 class Threads:
@@ -81,7 +81,3 @@ class Threads:
         )
         if r.status_code != 200:
             raise Exception("Repost failed")
-
-threads = Threads()
-threads.login(session_id="42082179496%3A0SNQsKIMYd4TCQ%3A10%3AAYdZ9WplvATYacwcrVHNFSNDzQJVE1dppIhtwbmTAQ")
-threads.like("https://www.threads.net/@ubuntumaniac/post/CwgucgevTZO")
