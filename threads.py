@@ -4,13 +4,14 @@ import json
 import re
 from instagrapi import Client
 
-from .utils import get_media_id_from_url
+from utils import get_media_id_from_url
 
 
 class Threads:
     def __init__(self, proxy: str = None):
         self._client = httpx.Client(proxies=f"http://{proxy}" if proxy else None)
         self._instagrapi = Client(proxy=f"http://{proxy}" if proxy else None)
+        self.session_id = None
         self.fb_dtsg = None
 
     def login(self, username: str = None, password: str = None, session_id: str = None):
@@ -19,9 +20,11 @@ class Threads:
                 self._instagrapi.login(username=username, password=password)
             except:
                 raise Exception("Login failed")
-            session_id = self._instagrapi.sessionid
+            self.session_id = self._instagrapi.sessionid
+        elif session_id:
+            self.session_id = session_id
         self._client.cookies = {
-            "sessionid": session_id
+            "sessionid": self.session_id
         }
     
     def _refresh_fb_dtsg(self):
