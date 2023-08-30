@@ -4,7 +4,7 @@ import json
 import re
 from instagrapi import Client
 
-from utils import get_media_id_from_url
+from .utils import get_media_id_from_url
 
 
 class Threads:
