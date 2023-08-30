@@ -28,12 +28,12 @@ class Threads:
         }
     
     def _refresh_fb_dtsg(self):
-        try:
-            if not self.fb_dtsg:
-                r = self._client.get("https://www.threads.net/404")
+        if not self.fb_dtsg:
+            r = self._client.get("https://www.threads.net/404")
+            try:
                 self.fb_dtsg = re.search(r'"token":"(.+?)"', r.text).group(1)
-        except:
-            raise Exception("Login failed")
+            except:
+                raise Exception("Login failed")
 
     def edit_profile(self, name: str, bio: str, avatar: str):
         if not self._instagrapi.sessionid:
@@ -55,21 +55,21 @@ class Threads:
         if r.status_code != 200:
             raise Exception("Like failed")
     
-    def comment(self, url: str, text: str):
-        r = httpx.get("https://www.threads.net/404/")
-        csrf_token = re.search(r'"csrf_token":"(.+?)"', r.text).group(1)
+    def follow(self, username: str):
+        self._refresh_fb_dtsg()
+        
+        user_id = self._instagrapi.user_id_from_username(username)
 
-        body = f"caption={text}&text_post_app_info={urllib.parse.quote(json.dumps({'reply_control': 0 ,'reply_id': get_media_id_from_url(url)}))}&publish_mode=text_post&upload_id=1693356029653"
+        body = f"variables={urllib.parse.quote(json.dumps({'target_user_id': user_id}))}&fb_dtsg={self.fb_dtsg}&doc_id=6240353742756860"
         r = self._client.post(
-            "https://www.threads.net/api/v1/media/configure_text_only_post/",
+            "https://www.threads.net/api/graphql",
             headers={
-                "Content-Type": "application/x-www-form-urlencoded",
-                "x-csrftoken": csrf_token
+                "Content-Type": "application/x-www-form-urlencoded"
             },
             data=body
         )
         if r.status_code != 200:
-            raise Exception("Comment failed")
+            raise Exception("Follow failed")
 
     def repost(self, url: str):
         self._refresh_fb_dtsg()
