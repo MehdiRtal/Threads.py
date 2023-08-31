@@ -35,7 +35,7 @@ class Threads:
             except:
                 raise Exception("Login failed")
 
-    def edit_profile(self, name: str, bio: str, avatar: str):
+    def edit_profile(self, name: str = None, bio: str = None, avatar: str = None):
         if not self._instagrapi.sessionid:
             self._instagrapi.login_by_sessionid(self._client.cookies["sessionid"])
         self._instagrapi.account_edit(full_name=name, biography=bio)
