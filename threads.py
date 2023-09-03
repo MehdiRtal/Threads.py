@@ -37,7 +37,12 @@ class Threads:
 
     def edit_profile(self, name: str = None, bio: str = None, avatar: str = None):
         if not self._instagrapi.sessionid:
-            self._instagrapi.login_by_sessionid(self._client.cookies["sessionid"])
+            self._instagrapi.set_settings({
+                "cookies": {
+                    "sessionid": self.session_id
+                }
+            })
+            # self._instagrapi.login_by_sessionid(self._client.cookies["sessionid"])
         if avatar:
             self._instagrapi.account_change_picture(avatar)
         self._instagrapi.account_edit(full_name=name, biography=bio)
